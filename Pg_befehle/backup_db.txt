@@ -1,0 +1,40 @@
+	//// Backup \\\\
+1-	cd C:\Program Files\PostgreSQL\13\bin
+2-	psql -p _port -d db_name -U db_user
+	psql -p 5432 -d baustelle -U pg96
+	sudo -u postgres psql # in Ubuntu
+3- Alle Table anzeigen: 
+	\dt
+4- schließen database:
+	\q
+5- Backup von eine Tabelle:
+	pg_dump  -d db_name -p _port -U db_user -t table_neme -f c:/path/von /backup/test.txt
+	pg_dump -d baustelle -p 5432 -U pg96 -t baustellen -f C:/swr_backup/Datenbank/baustelle.txt
+6- Backup von eine Tabelle, um anzulegen:
+	pg_dump  -d db_name -p _port -U db_user -t table_neme --insert -f c:/path/von /backup/test.txt
+	pg_dump -d baustelle -p 5432 -U pg96 -t baustellen --insert -f C:/swr_backup/Datenbank/baustelle_insert.txt
+7- Backup von alle Tabelle:
+	pg_dump  -d db_name -p _port -U db_user --insert -f c:/path/von /backup/test.txt
+	pg_dump -d baustelle -p 5432 -U pg96 -t baustellen --insert -f C:/swr_backup/Datenbank/db_baustelle.txt
+8- Custum format:
+	pg_dump  -d db_name -p _port -U db_user -F c -v -f c:/path/von /backup/test.txt
+	pg_dump -d baustelle -p 5432 -U pg96 -F c -v -f C:/swr_backup/Datenbank/db_baustelle.txt
+9- directory backup forschleife:
+	pg_dump  -d db_name -p _port -U db_user -F d -v -f c:/path/von /backup/dirfor
+	pg_dump -d baustelle -p 5432 -U pg96 -F d -v -f C:/swr_backup/Datenbank/dirfor
+	
+  //// Restore \\\\
+1-	psql -p 5432 -d baustelle -U pg96
+	sudo -u postgres psql # in Ubuntu
+2-	create database db_name; 
+3-	Restore  eine Tabelle:
+	psql -p 5432 -d neue_db -U pg96 -f c:/path/von gespeicherte backup Tabelle/test.txt
+	psql -p 5432 -d neue_db -U pg96 -f C:/swr_backup/Datenbank/baustelle.txt
+4- Restore Custm format:
+	pg_restore -d neue_db -U db_user -p _port -f c:/path/von gespeicherte backup custom/test.txt
+	pg_restore -d neue_db -U pg96 -p 5432 -f c:/path/von gespeicherte backup custom/test.txt
+5- Restore dirfor:
+	pg_restore -d neue_db -U pg96 -p 5432  C:/swr_backup/Datenbank/dirfor
+	
+// PostgreSQL Ubuntu ////
+https://www.vultr.com/docs/how-to-install-configure-backup-and-restore-postgresql-on-ubuntu-20-04-lts#5__Backup_and_Restore_PostgreSQL_Database

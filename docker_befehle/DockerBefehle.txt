@@ -1,0 +1,32 @@
+stop all containers:
+	docker stop $(docker ps -a -q)
+	
+remove all containers:
+	docker rm $(docker ps -a -q)
+	
+remove all images:
+	docker rmi -f $(docker images -a -q)
+	
+
+docker ps -a                # Lists containers (and tells you which images they are spun from)
+
+docker images               # Lists images 
+
+docker rm <container_id>    # Removes a stopped container
+
+docker rm -f <container_id> # Forces the removal of a running container (uses SIGKILL)
+
+docker rmi <image_id>       # Removes an image 
+                            # Will fail if there is a running instance of that image i.e. container
+
+docker rmi -f <image_id>    # Forces removal of image even if it is referenced in multiple repositories, 
+                            # i.e. same image id given multiple names/tags 
+                            # Will still fail if there is a docker container referencing image
+					
+Install pgAdmin in Container:
+	docker pull dpage/pgadmin4
+	docker run -p 5000:80 -e 'PGADMIN_DEFAULT_EMAIL=admin@domain.com' -e 'PGADMIN_DEFAULT_PASSWORD=admin' -d dpage/pgadmin4 -e depends_on:Postgres_db -e links:"Postgres_db:pgsql-server"
+	
+Install Posgis
+	docker pull postgis/postgis
+	docker run --name Postgres_db -e ports:15432:5432 -e POSTGRES_USER:root -e POSTGRES_PASSWORD=root -d postgis/postgis

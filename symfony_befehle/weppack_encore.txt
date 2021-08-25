@@ -1,0 +1,96 @@
+Bootstrap 5
+
+//Bootstrap 5 Form Theme for Form
+https://symfony.com/doc/6.0/form/bootstrap5.html
+
+# config/packages/twig.yaml
+twig:
+    form_themes: ['bootstrap_5_layout.html.twig']
+	
+	{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+////////////////  yarn install or npm install	////////////
+//Installing Encore =>
+
+ 1- composer require symfony/webpack-encore-bundle
+ 2- 
+	yarn install 
+		or
+	npm install	
+ 4- rename styles to css in assets file 
+	  in assets/css file convert app.css to app.scss and 
+	  in assets/styles file convert app.css to app.scss and 
+	  in app.js convert from: import '../css/app.css'; to: import '../css/app.scss';
+  - create file with name js
+  - copy app.js $ bootstrap.js to js file
+  - in app.js: import '../js/bootstrap'; instead import './bootstrap';
+  - in bootstrap.js add point '../controllers' instead './controllers' 
+	
+  in webpack.config.js : - uncomment:  .enableSassLoader()
+						 -  .addEntry('app', './assets/app.js') to .addEntry('app', './assets/js/app.js')
+  
+	// https://getbootstrap.com/
+ 5- npm install sass-loader sass webpack --save-dev
+  / yarn add sass-loader sass --dev
+ 6- add to base.html.twig this:
+      {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+ 7- npm run build / yarn watch
+ 8- - https://symfony.com/doc/current/frontend/encore/postcss.html
+    - npm install postcss-loader autoprefixer --dev
+	/ yarn add autoprefixer --dev
+	
+ 9- create postcss.config.js file in Project and add 
+		module.exports = {
+			plugins: {
+				// include whatever plugins you want
+				// but make sure you install these via yarn or npm!
+
+				// add browserslist config to package.json (see below)
+				autoprefixer: {}
+			}
+		}
+	- npm run build / yarn watch
+ 10- npm install bootstrap
+   / yarn add bootstrap --dev
+ 11- copy in app.js: import { Tooltip, Toast, Popover } from 'bootstrap';
+ 12- create file custom.scss in assets/style
+ 13- add to app.scss:
+	@import "custom";
+	@import "~bootstrap/scss/bootstrap";
+	
+ 14- npm i @popperjs/core 
+	/yarn add @popperjs/core
+   / yarn add popper.js --dev 
+ 15- npm run build  / yarn watch 
+ 16- npm install jquery
+   / yarn add jquery --dev
+		import $ from "jquery";  or const $ = require('jquery'); in app.js
+		
+		// create global $ and jQuery variables
+		// global.$ = global.jQuery = $;
+
+		in webpack.config.js
+		.autoProvidejQuery()
+
+		in config/webpack_encore.yaml
+			script_attributes:
+				defer: false
+				
+ 17- npm install font-awesome 
+   / yarn add font-awesome --dev 
+   / npm add --dev @fortawesome/fontawesome-free
+	 yarn add --dev @fortawesome/fontawesome-free
+		- @import '~font-awesome'; in assets/css/app.scss
+		/ 	$fa-font-path: '~@fortawesome/fontawesome-free/webfonts';
+			@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+			@import '~@fortawesome/fontawesome-free/scss/solid';
+			@import '~@fortawesome/fontawesome-free/scss/regular';
+			@import '~@fortawesome/fontawesome-free/scss/brands';
+		
+ 18- php bin/console make:controller Home

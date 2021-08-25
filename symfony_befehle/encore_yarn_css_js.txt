@@ -1,0 +1,17 @@
+// Installing WebpackEncoreBundle + yarn and css:  https://symfonycasts.com/screencast/webpack-encore
+
+	1- composer require symfony/webpack-encore-bundle
+	2- yarn
+	3- ./node_modules/.bin/encore dev
+	4- ./node_modules/.bin/encore dev --watch
+	5- yarn watch
+		- import controllers from './controllers/hello_controller'; in assets/app.js
+	6- yarn add jquery --dev
+		- import $ from 'jquery'; in assets/app.js
+	7- yarn add bootstrap --dev
+		- @import '~bootstrap';  in assets/style/app.css
+	8- yarn add popper.js --dev
+	9- yarn add font-awesome --dev 
+		- @import '~font-awesome'; in assets/style/app.css
+	10- yarn add sass-loader sass --dev
+	

@@ -1,0 +1,38 @@
+Install Oracle Driver
+	instantclient-basic-linux.x64-12.2.0.1.0.zip
+	instantclient-sdk-linux.x64-12.2.0.1.0.zip
+	Url für die Installation: https://www.oracle.com/de/database/technologies/instant-client/linux-x86-64-downloads.html
+neue Folder erstellen:
+	sudo mkdir /opt/oracle
+	cd /opt/oracle
+Unzip die Packte: 
+	sudo unzip instantclient-basic-linux.x64-12.2.0.1.0.zip
+	sudo unzip instantclient-sdk-linux.x64-12.2.0.1.0.zip
+	sudo mv instantclient_12_2 /opt/oracle/instantclient
+	sudo chown -R root:www-data /opt/oracle
+	sudo ln -s /opt/oracle/instantclient_12_2/libclntsh.so.12.1 /opt/oracle/instantclient_12_2/libclntsh.so
+	sudo ln -s /opt/oracle/instantclient_12_2/libocci.so.12.1 /opt/oracle/instantclient_12_2/libocci.so
+	sudo echo /opt/oracle/instantclient_12_2 > /etc/ld.so.conf.d/oracle-instantclient
+	ldconfig
+	sudp apt-get install php8.0-dev php-pear build-essential libaio1
+	sudo pecl channel-update pecl.php.net
+	sudo pecl install oci8
+	- dann das in Terminal kopieren: 
+	instantclient,/opt/oracle/instantclient_12_2
+	
+ OCI8 extension hinzufügen:
+	echo "extension =oci8.so" >> /etc/php/8.0/fpm/php.ini
+	echo "extension =oci8.so" >> /etc/php/8.0/cli/php.ini
+	echo "extension =oci8.so" >> /etc/php/8.0/apache2/php.ini
+
+zu apache2 Umgebungsvariable hinzufügen:
+	echo "export LD_LIBRARY_PATH=/opt/oracle/instantclient_12_2" >> /etc/apache2/envvars
+	echo "export ORACLE_HOME=/opt/oracle/instantclient_12_2" >> /etc/apache2/envvars
+
+	echo "LD_LIBRARY_PATH=/opt/oracle/instantclient_12_2:$LD_LIBRARY_PATH" >> /etc/environment
+	
+neue Starten
+	sudo shutdown -r now
+Erweitrung prüfen, ob sie enable ist
+	php -m | grep 'oci8'
+	wenn return oci8, dann ist funktioniert

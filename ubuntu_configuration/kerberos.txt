@@ -1,0 +1,123 @@
+//// Kerbros ubuntu////
+Kerbros Löschen
+	1- sudo apt purge -y krb5-kdc krb5-admin-server krb5-config krb5-locales krb5-user krb5.conf
+	2- sudo rm -rf /var/lib/krb5kdc
+	3- sudo apt update
+
+Kerbros installieren
+	sudo apt update
+	sudo apt upgrade
+	sudo apt install sssd heimdal-clients msktutil
+	sudo mv /etc/krb5.conf /etc/krb5.conf.default
+	
+neue Realm eingeben
+	sudo nano /etc/krb5.conf
+	- und flogende Zeile hinzufügen:
+			[libdefaults]
+				default_realm = CIS-ROSTOCK.DE
+
+			# The following krb5.conf variables are only for MIT Kerberos.
+				kdc_timesync = 1
+				ccache_type = 4
+				forwardable = true
+				proxiable = true
+
+			# The following encryption type specification will be used by MIT Kerberos
+			# if uncommented.  In general, the defaults in the MIT Kerberos code are
+			# correct and overriding these specifications only serves to disable new
+			# encryption types as they are added, creating interoperability problems.
+			#
+			# The only time when you might need to uncomment these lines and change
+			# the enctypes is if you have local software that will break on ticket
+			# caches containing ticket encryption types it doesn't know about (such as
+			# old versions of Sun Java).
+
+			#	default_tgs_enctypes = des3-hmac-sha1
+			#	default_tkt_enctypes = des3-hmac-sha1
+			#	permitted_enctypes = des3-hmac-sha1
+
+			# The following libdefaults parameters are only for Heimdal Kerberos.
+				fcc-mit-ticketflags = true
+
+			[realms]
+				CIS-ROSTOCK.DE = {
+					admin_server = cis-dc2012.cis-rostock.de
+					kdc = cis-dc2012.cis-rostock.de
+					auth_to_local = RULE:[1:$1]
+					auth_to_local = DEFAULT
+				}
+
+			[domain_realm]
+				bothe-ws10.cis-rostock.de = CIS-ROSTOCK.DE
+				
+			[logging]
+				default = FILE:/var/log/krb5log.log
+				kdc = FILE:/var/log/krb5kdc.log
+				admin_server = FILE:/var/log/krb5admin.log
+		
+sudo systemctl restart krb5-admin-server.service
+sudo apt install krb5-user libpam-ccreds auth-client-config
+Initializiert Kerberos und generate keytab:
+	kinit kalmkheter
+	klist
+	sudo msktutil -N -c -b 'CN=COMPUTERS' -s SISNET-U20/kalmkheter.cis-rostock.de -k my-keytab.keytab --computer-name SISNET-U20 --upn SISNET-U20$ --server cis-dc2012.cis-rostock.de --user-creds-only
+	sudo msktutil -N -c -b 'CN=COMPUTERS' -s SISNET-U20/kalmkheter -k my-keytab.keytab --computer-name SISNET-U20 --upn SISNET-U20$ --server cis-dc2012.cis-rostock.de --user-creds-only
+	kdestroy
+	
+Configure SSSD:
+	sudo mv my-keytab.keytab /etc/sssd/my-keytab.keytab
+	sudo nano /etc/sssd/sssd.conf
+		[sssd]
+		services = nss, pam
+		config_file_version = 2
+		domains = cis-rostock.de
+
+		[nss]
+		entry_negative_timeout = 0
+		#debug_level = 5
+
+		[pam]
+		#debug_level = 5
+
+		[domain/cis-rostock.de]
+		#debug_level = 10
+		enumerate = false
+		id_provider = ad
+		auth_provider = ad
+		chpass_provider = ad
+		access_provider = ad
+		dyndns_update = false
+		ad_hostname = sisnet-u20.cis-rostock.de
+		ad_server = cis-dc2012.cis-rostock.de
+		ad_domain = cis-rostock.de
+		ldap_schema = ad
+		ldap_id_mapping = true
+		fallback_homedir = /home/%u
+		default_shell = /bin/bash
+		ldap_sasl_mech = gssapi
+		ldap_sasl_authid = SISNET-U20$
+		krb5_keytab = /etc/sssd/my-keytab.keytab
+		ldap_krb5_init_creds = true
+	
+	sudo chmod 0600 /etc/sssd/sssd.conf
+
+Konfiguration PAM:
+	sudo nano /etc/pam.d/common-session
+	-diese Zeile hinzufügen:
+		session required pam_mkhomedir.so skel=/etc/skel umask=0077
+	sudo systemctl restart sssd
+	sudo adduser kalmkheter sudo
+	su -l kalmkheter
+
+#show all users
+		sudo kadmin.local
+		listprincs
+		add_principal kalmkheter@CIS-ROSTOCK.DE
+		xst -norandkey -k /etc/krb5.keytab kalmkheter@CIS-ROSTOCK.DE
+		quit
+		sudo klist -kte /etc/krb5.keytab
+		sudo kdestroy
+		sudo kinit -kt /etc/krb5.keytab kalmkheter@CIS-ROSTOCK.DE
+                  
+				  
+	

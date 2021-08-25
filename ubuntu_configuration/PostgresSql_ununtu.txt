@@ -1,0 +1,43 @@
+Installieren von PostgreSQL unter Ubuntu 20.04
+
+Schritt 1 — Installieren von PostgreSQL 12
+	sudo apt update
+	sudo apt -y install vim bash-completion wget
+	sudo apt -y upgrade
+	sudo reboot
+	wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+	echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+	sudo apt update
+	sudo apt -y install postgresql-12 postgresql-client-12
+Schritt 2 — Test der Verbindung von PostgreSQL 12
+	sudo su - postgres
+	Username und Passwort von Pgql ändern
+	psql -c "alter user postgres with password 'postgres@root'"
+	\q
+	PostgreSQL configuration file:
+		sudo nano /etc/postgresql/12/main/postgresql.conf
+	sudo systemctl restart postgresql
+Schritt 3 — Installieren von PostGIS 
+	sudo apt update
+	sudo apt install postgis postgresql-12-postgis-3
+	sudo -i -u postgres
+	
+	- test user/database erstellen:
+	createuser postgis_test
+	createdb postgis_db -O postgis_test
+	psql -d postgis_db
+	CREATE EXTENSION postgis;
+Schritt 4 — Installieren von PgAdmin 4
+	sudo apt update
+	sudo apt install pgadmin4 pgadmin4-apache2
+	-email address und Passwort hinzfügen 
+	-für neue email and passwort hinzufügen, Löschen Sie diese Datei
+		/var/lib/pgadmin/pgadmin4.db
+	- dann 
+		sudo nano /usr/pgadmin4/bin/setup-web.sh
+		admin@test.de
+		123456
+	- UFW firewall Konfiguration:
+		sudo ufw allow http
+		sudo ufw allow https
+	

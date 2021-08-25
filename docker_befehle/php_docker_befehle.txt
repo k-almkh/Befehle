@@ -1,0 +1,45 @@
+Edit php-file in Docker:
+
+1- docker run -it --rm php:8.0-fpm bash  #or
+   docker exec -it <container name or id> bash
+2- cd /usr/local/bin/
+3- ls -la
+4- docker-php-ext-install intl
+5- apt-get update
+6- apt-get install -y libicu-dev
+7- docker-php-ext-install intl
+8- php -m
+9- php -m | grep intl
+
+
+//////////////
+#Container
+#Software source modified to NetEase mirror station source
+#echo "deb http://mirrors.163.com/debian/ stretch main contrib non-free\ndeb http://mirrors.163.com/debian/ stretch-updates main contrib non-free\ndeb http://mirrors.163.com/debian/ stretch-backports main contrib non-free" > /etc/apt/sources.list
+- docker exec -it <Container ID or container name> /bin/bash or
+  docker exec -it <container name or id> bash
+- apt update  #Update software source
+- apt install -y libwebp-dev libjpeg-dev libpng-dev libfreetype6-dev #Install various libraries
+- docker-php-source extract #Unzip the source code
+- cd /usr/src/php/ext/gd  #gd source folder
+- docker-php-ext-configure gd --with-webp-dir=/usr/include/webp --with-jpeg-dir=/usr/include --with-png-dir=/usr/include --with-freetype-dir=/usr/include/freetype2   #Ready to compile
+- docker-php-ext-install gd   #Compile and install
+- php -m | grep gd
+#Restart the container
+
+
+////// ldap /////
+- docker exec -it <container name or id> bash
+- cd /usr/local/bin/
+- apt-get update 
+- apt-get install libldap2-dev -y 
+- docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ && \
+- docker-php-ext-install ldap
+- php -m | grep ldap
+
+///  read php ini /////
+	cd /usr/local/etc/php
+	
+	apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng12-dev
+	
+	docker run -d -p 1521:1521 --name oracle store/oracle/database-enterprise:12.2.0.1--slim

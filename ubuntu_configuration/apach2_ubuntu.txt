@@ -1,0 +1,68 @@
+(((((((((((( Apache2 ))))))))))))
+https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-20-04-de
+
+Schritt 1 — Installieren von Apache
+1- sudo apt update
+2- sudo apt install apache2
+Schritt 2 — Anpassen der Firewall
+1- sudo ufw app list	
+2- sudo ufw allow 'Apache'
+
+Sie können die Änderung überprüfen, indem Sie Folgendes eingeben:
+3 -sudo ufw status
+Schritt 3 — Verwalten des Apache-Prozesses
+1- sudo systemctl stop apache2
+2- sudo systemctl start apache2
+3- sudo systemctl restart apache2
+4- sudo systemctl reload apache2
+5- sudo systemctl disable apache2
+6- sudo systemctl enable apache2
+
+Schritt 4 — Einrichten von virtuellen Hosts
+ Erstellen Sie das Verzeichnis für das Project wie folgt:
+ 1- sudo mkdir /var/www/mein_project
+ Weisen Sie als Nächstes das Eigentum am Verzeichnis mit der $USER Umgebungsvariablen zu:
+ 2- sudo chown -R $USER:$USER /var/www/mein_project
+ 3- sudo chmod -R 755 /var/www/mein_project
+ Erstellen Sie als Nächstes eine index.html
+ 4- sudo nano /var/www/mein_project/index.html
+ Fügen Sie dann das folgende HTML-Beispiel hinzu:
+		 <html>
+			<head>
+				<title>Hallo mein_project!</title>
+			</head>
+			<body>
+				<h1>mein_project virtual host!</h1>
+			</body>
+		</html>
+		
+ Sie müssen eine virtuelle Host-Datei erstellen
+ 6- sudo nano /etc/apache2/sites-available/mein_project.conf
+ Fügen Sie den folgenden Konfigurationsblock ein:
+	Listen 8080
+		 <VirtualHost *:8080>
+			ServerAdmin webmaster@localhost
+			ServerName mein_project
+			ServerAlias www.mein_project
+			DocumentRoot /var/www/mein_project
+			ErrorLog ${APACHE_LOG_DIR}/error.log
+			CustomLog ${APACHE_LOG_DIR}/access.log combined
+		</VirtualHost>
+ Aktivieren wir jetzt die Datei über das Tool a2ensite:
+ 7- sudo a2ensite mein_project.conf
+ Deaktivieren Sie die unter 000-default.conf definierte Standard-Site:
+ 8- sudo a2dissite 000-default.conf
+ Als Nächstes testen wir auf Konfigurationsfehler:
+ 9- sudo apache2ctl configtest
+ Starten Sie Apache neu:
+ 10- sudo systemctl restart apache2
+ 
+ //////// VirtualHostHost //////
+cd /etc/apache2/sites-available/
+sudo cp 000-default.conf ./auskunft.de.conf
+sudo a2ensite auskunft.de.conf
+sudo a2dissite 000-default.conf 
+sudo ufw staus
+sudo ufw enable
+sudo ufw allow in ssh
+sudo ufw allow in 8006

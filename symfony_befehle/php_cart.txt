@@ -1,0 +1,15 @@
+
+1- composer require slim/slim --ignore-platform-reqs
+2- composer require slim/twig-view    
+3- composer require php-di/slim-bridge 
+4- composer require illuminate/database   
+5- add in composer.json this:
+ "autoload": {
+        "psr-4": {
+            "php_tutorial\\": "app"
+        }
+    }
+ and add new file 'app'
+ and run:
+ composer dump-autoload -o        
+6- 

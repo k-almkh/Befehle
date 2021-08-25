@@ -1,0 +1,40 @@
+Mapserver
+
+https://linux-packages.com/ubuntu-xenial-xerus/package/cgi-mapserver
+
+1- sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+2- sudo apt-get install cgi-mapserver
+3- sudo apt-get install cgi-mapserver mapserver-bin mapserver-doc php-mapscript
+
+4- /etc/apache2/mapserver.conf
+Listen 8028
+<VirtualHost *:8028>
+	ServerAdmin webmaster@localhost
+	ServerName mapserverdemo
+	DocumentRoot /var/www/ms4w
+
+	 <Directory /var/www/ms4w>
+		AllowOverride All
+                Order Allow,Deny
+                Allow from All
+	</Directory>
+
+	ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+    <Directory "/usr/lib/cgi-bin/">
+       AllowOverride All
+        Options +ExecCGI -MultiViews +FollowSymLinks
+       AddHandler fcgid-script .fcgi
+       Require all granted
+    </Directory>
+	
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>
+
+5- sudo a2ensite mapserver.conf
+6- sudo systemctl restart apache2
+
+7- chmod 777 /var/www/ms4w/tmp/ms_tmp
+
+cmake .. -DCMAKE_BUILD_TYPE='debug' -DCMAKE_INSTALL_PREFIX=/opt/oracle/instantclient -DCMAKE_PREFIX_PATH=/opt/oracle/instantclient:/usr/include/oracle/12.2/client64:/usr/lib:/usr/lib64:/usr/share/gdal -DWITH_ORACLESPATIAL=1 -DWITH_PROTOBUFC=0 -DWITH_FCGI=0 -DWITH_CURL=1

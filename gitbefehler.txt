@@ -1,0 +1,42 @@
+Create a new repository on the command line
+
+1- Add git file:
+	git init
+2- Add file to git file:
+	git add .
+3- add commit for changed file
+	git commit -m "first commit"
+4- add bracnch 
+	git branch -M main
+5- access git file with github repository
+	git remote add origin https://github.com/k-almkh/my_project.git
+	git remote add origin "link from repository"
+6- add git file to github repository 
+	git push -u origin main
+
+Or push an existing repository from the command line
+
+git remote add origin https://github.com/k-almkh/my_project.git
+git branch -M main
+git push -u origin main
+
+7- show commit
+	git log
+8- bring project form Github 
+	git clone "link from repository"
+9- bring new Update from project
+	git pull origin master
+10- return form last change in project
+	git reset --hard
+11- add new branch
+	git checkout -b newbranch
+12- Let's start with deleting a local branch. On the command line, you can type the following:
+	git branch -d <local-branch>
+13- To delete a remote branch, you need to use the "git push" command:
+	git push origin --delete <remote-branch-name>
+14- branch mergen
+	git mergen
+  -	or from github click on new pull request -> create pull request -> Merge pull request -> confirm  merge
+
+Error: LF will be replaced by CRLF in git - What is that and is it important?
+Answers: git config core.autocrlf true

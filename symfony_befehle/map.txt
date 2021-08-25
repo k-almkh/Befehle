@@ -1,0 +1,206 @@
+
+import Map from 'ol/Map.js';
+import View from 'ol/View.js';
+import {getCenter} from 'ol/extent.js';
+import {transform} from 'ol/proj.js';
+import TileLayer from 'ol/layer/Tile.js';
+import OSM from 'ol/source/OSM.js';
+import WKT from 'ol/format/WKT.js';
+import {defaults as defaultControls} from 'ol/control.js';
+import Draw from 'ol/interaction/Draw.js';
+import Heatmap from 'ol/layer/Heatmap.js';
+
+import ol_control_Print from 'ol-ext/control/Print'
+
+import {ScaleLine} from 'ol/control.js';
+import ImageLayer from 'ol/layer/Image.js';
+import ImageWMS from 'ol/source/ImageWMS.js';
+import TileWMS from 'ol/source/TileWMS.js'; 
+import Static from 'ol/source/ImageStatic.js';
+import proj4 from '../js/proj4';
+import {register} from 'ol/proj/proj4.js';
+import {get as getProjection} from 'ol/proj';
+import BingMaps from 'ol/source/BingMaps.js';
+import * as olProj from 'ol/proj';
+import GeoJSON from 'ol/format/GeoJSON.js';
+import VectorLayer from 'ol/layer/Vector.js';
+import VectorSource from 'ol/source/Vector.js';
+import {Circle as CircleStyle,Fill, Stroke, Style, Text} from 'ol/style.js';
+import ol from '../js/ol.js';
+
+/////////////////////
+  ((((((((((((())))))))))))))
+  
+ 1- composer require symfony/webpack-encore-bundle
+ 2- 
+	yarn install 
+		or
+	npm install	
+ 4- rename styles to css in assets file 
+	  in assets/css file convert app.css to app.scss and 
+	  app.js from: import '../css/app.css'; to: import '../css/app.scss';
+	  in webpack.config.js : uncomment:  .enableSassLoader() 
+		// https://getbootstrap.com/
+		or
+	  create two files with name js
+	  copy the files [ proj4.js, ol.js, ol-ext.js] into js and [ol.css, ol-ext.css] into css
+ 5- npm install sass-loader sass webpack --save-dev
+ 6- add to base.html.twig this:
+      {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+ 7- npm run build
+ 8- - https://symfony.com/doc/current/frontend/encore/postcss.html
+    - npm install postcss-loader autoprefixer --dev
+	
+ 9- create postcss.config.js file in Project and add 
+		module.exports = {
+			plugins: {
+				// include whatever plugins you want
+				// but make sure you install these via yarn or npm!
+
+				// add browserslist config to package.json (see below)
+				autoprefixer: {}
+			}
+		}
+	npm run build
+ 10- npm install bootstrap
+ 11- copy in app.js: import { Tooltip, Toast, Popover } from 'bootstrap';
+ 12- create file custom.scss in assets/css in copy this into the file: 
+																		.map{
+																			width: 100%;
+																			height: 500px;
+																		}
+ 13- add to app.scss:
+	@import "custom";
+	@import 'ol';
+	@import 'ol-ext';
+	@import "~bootstrap/scss/bootstrap";
+	
+ 14- npm i @popperjs/core  
+ 15- npm run build  
+ 16- npm install jquery
+		import $ from "jquery";  or const $ = require('jquery'); in app.js
+		
+		// create global $ and jQuery variables
+		// global.$ = global.jQuery = $;
+
+		in webpack.config.js
+		.autoProvidejQuery()
+
+		in config/webpack_encore.yaml
+			script_attributes:
+				defer: false
+				
+ 17- add this file to assets/js
+ 
+ 18- npm install font-awesome  
+		- @import '~font-awesome'; in assets/css/app.scss
+		
+		
+///////////////
+    /////////////////
+//////////////
+Gemotry:
+https://github.com/jsor/doctrine-postgis
+
+- composer require jsor/doctrine-postgis
+- A setup could look like this in the services.yml.
+	services:
+		Jsor\Doctrine\PostGIS\Event\ORMSchemaEventSubscriber:
+			tags:
+				- { name: doctrine.event_subscriber, connection: default }
+- It is also recommended to register the DBAL types in the doctrine section of the config/packages/doctrine.yaml config file.
+	doctrine:
+		dbal:
+			types:
+				geography:
+					class: 'Jsor\Doctrine\PostGIS\Types\GeographyType'
+					commented: false
+				geometry:
+					class: 'Jsor\Doctrine\PostGIS\Types\GeometryType'
+					commented: false
+				raster:
+					class: 'Jsor\Doctrine\PostGIS\Types\RasterType'
+					commented: false
+			schema_filter: ~^(?!tiger)(?!topology)~
+			mapping_types:
+            _text: string
+			
+
+install openlyaers js  Files
+//Definitionen der Koordinatentransformation. EPSG:4326 (WGS84) und EPSG:3857 (Spherical Mercator) sind vordefiniert.
+proj4.defs("EPSG:25833","+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+proj4.defs("EPSG:5650","+proj=tmerc +lat_0=0 +lon_0=15 +k=0.9996 +x_0=33500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+proj4.defs("EPSG:4326","+proj=longlat +datum=WGS84 +no_defs");
+ol.proj.proj4.register(proj4);
+
+// Projektion Kartenmittelpunkt und Ausdehnung festlegen:
+var mapProjection = "EPSG:25833";
+var sisnetProjection = "EPSG:5650";
+var mapCenter = [312350, 5995745];
+var mapExtent = [264349.59, 5967252.74, 356815.57, 6023384.82];
+// Define view layer
+var view =  new ol.View({
+    projection: mapProjection,
+    center: mapCenter,
+    zoom: 11,
+    minZoom: 10,
+    extent: mapExtent
+    })
+
+
+// Basemap layer
+var basemapLayer = new ol.layer.Tile({
+  source: new ol.source.OSM(),
+  extent: mapExtent
+  })
+// Layers Array
+var layerArray = [basemapLayer]
+// Initiating Map
+var map = new ol.Map({
+    target : 'mymap',
+    view :view,
+    layers:layerArray
+})
+
+
+//  1. To define a source
+var drawSource = new ol.source.Vector()
+// 2. To Define a style
+// Skip it and let the OL use default styling
+// 3. To Define a Layer
+var drawLayer = new ol.layer.Vector({
+    source:drawSource
+})
+// 4. Adding on map
+map.addLayer(drawLayer)
+
+
+// Initiate a draw interaction
+var draw = new ol.interaction.Draw({
+    type : 'Point',
+    source:drawSource
+})
+draw.on('drawstart', function(evt){
+    drawSource.clear()
+})
+draw.on('drawend',function(evt){
+    // alert('point is added')
+    clickedCoord = evt.feature.getGeometry().getFlatCoordinates() 
+    $('#pointadding').modal('show');
+    console.log('clicked at', evt.feature.getGeometry().getFlatCoordinates()    )
+    map.removeInteraction(draw)
+})
+
+// Function that enables draw interaction
+
+function startDrawing(){
+// add interaction to the map
+map.addInteraction(draw)
+}
+

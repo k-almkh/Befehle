@@ -1,0 +1,6 @@
+http://download.geofabrik.de/europe.html
+1- download pbf datei ;
+2- sudo apt install osm2pgsql
+3- sudo su postgres
+4- osm2pgsql -c -d baustellen /home/sisadmin/Downloads/mecklenburg-vorpommern-latest.osm.pbf
+

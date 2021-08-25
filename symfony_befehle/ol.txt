@@ -1,0 +1,2 @@
+ol:
+1- https://openlayers.org/en/latest/doc/quickstart.html

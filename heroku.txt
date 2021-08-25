@@ -1,0 +1,48 @@
+https://yoandev.co/mettre-en-production-une-application-symfony-5-avec-heroku
+
+
+git init
+Initialized empty Git repository in ~/symfony-heroku/.git/
+
+git add .
+
+git commit -m "initial import"
+
+git remote add origin git@gitlab.com:yoandev.co/youtube-heroku.git
+
+git push -u origin --all
+
+heroku create
+ 
+heroku addons:create heroku-postgresql:hobby-dev
+
+echo 'web: heroku-php-apache2 public/' > Procfile
+
+git add Procfile
+
+git commit -m "Heroku Procfile"
+
+heroku config:set APP_ENV=prod
+
+heroku config:set APP_SECRET=$(php -r 'echo bin2hex(random_bytes(16));')
+
+composer require symfony/apache-pack
+
+in composer.json
+"scripts": {
+        (...),
+        "compile": [
+            "php bin/console doctrine:migrations:migrate"
+        ]
+    },
+(...)
+
+git add .
+
+git commit -m "add config heroku"
+
+git push
+
+git push heroku master
+
+heroku open

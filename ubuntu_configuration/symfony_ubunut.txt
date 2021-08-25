@@ -1,0 +1,41 @@
+[[[[[[ Symfony ]]]]]]
+install:	wget https://get.symfony.com/cli/installer -O - | bash
+global in systeem:	mv /home/sisadmin/.symfony/bin/symfony /usr/local/bin/symfony
+after remove cache: 	sudo chmod -R 777 /var/www/html/ass/var/cache/*
+dann: 	composer update
+
+[[install Composer on Ubuntu]]
+
+without php:  composer update --ignore-platform-reqs
+
+sudo apt install curl git
+curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+cd /var/www/
+sudo composer create-project symfony/skeleton symfony5
+
+[[set the correct permissions for Symfony root directory ]]
+sudo chown -R www-data:www-data /var/www/symfony5/
+sudo chmod -R 755 /var/www/symfony5/
+
+[[[[ Configure Apache2 ]]]]
+sudo nano /etc/apache2/sites-available/symfony.conf
+
+<VirtualHost *:80>
+     ServerAdmin admin@symfonytest.com
+     DocumentRoot /var/www/html/symfonytest/public
+     ServerName symfonytest.com
+     ServerAlias www.symfonytest.com
+
+     <Directory /var/www/html/symfonytest/public/>
+          Options FollowSymlinks
+          AllowOverride All
+          Require all granted
+     </Directory>
+
+     ErrorLog ${APACHE_LOG_DIR}/error.log
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+[[Enable the Symfony]]
+sudo a2ensite symfony.conf
+sudo systemctl restart apache2.service
