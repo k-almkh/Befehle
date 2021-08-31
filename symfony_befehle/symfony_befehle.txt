@@ -1,1 +1,5 @@
-php bin/console security:encode-password
+	php bin/console security:encode-password
+
+Symfony Local Web Server
+	symfony server:ca:install
+	symfony server:start -d

@@ -1,6 +1,10 @@
 http://download.geofabrik.de/europe.html
+http://github.com/mapserver/mapserver/wiki/RenderingOsmDataWindows
 1- download pbf datei ;
 2- sudo apt install osm2pgsql
 3- sudo su postgres
 4- osm2pgsql -c -d baustellen /home/sisadmin/Downloads/mecklenburg-vorpommern-latest.osm.pbf
+
+/// linke for install osm
+https://www.linuxbabe.com/ubuntu/openstreetmap-tile-server-ubuntu-20-04-osm
 

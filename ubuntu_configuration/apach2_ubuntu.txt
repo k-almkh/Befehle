@@ -50,6 +50,7 @@ Schritt 4 — Einrichten von virtuellen Hosts
 		</VirtualHost>
  Aktivieren wir jetzt die Datei über das Tool a2ensite:
  7- sudo a2ensite mein_project.conf
+	sudo a2enmod
  Deaktivieren Sie die unter 000-default.conf definierte Standard-Site:
  8- sudo a2dissite 000-default.conf
  Als Nächstes testen wir auf Konfigurationsfehler:
@@ -66,3 +67,5 @@ sudo ufw staus
 sudo ufw enable
 sudo ufw allow in ssh
 sudo ufw allow in 8006
+
+

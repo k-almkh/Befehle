@@ -17,6 +17,7 @@ Schritt 2 — Test der Verbindung von PostgreSQL 12
 	PostgreSQL configuration file:
 		sudo nano /etc/postgresql/12/main/postgresql.conf
 	sudo systemctl restart postgresql
+	change role: /etc/postgresql/12/main/pg_hba.conf
 Schritt 3 — Installieren von PostGIS 
 	sudo apt update
 	sudo apt install postgis postgresql-12-postgis-3
@@ -40,4 +41,8 @@ Schritt 4 — Installieren von PgAdmin 4
 	- UFW firewall Konfiguration:
 		sudo ufw allow http
 		sudo ufw allow https
+		
+Infos über Pgql:
+	sudo -u postgres -i
+	free -mh 
 	

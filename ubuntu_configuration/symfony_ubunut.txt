@@ -14,8 +14,10 @@ cd /var/www/
 sudo composer create-project symfony/skeleton symfony5
 
 [[set the correct permissions for Symfony root directory ]]
-sudo chown -R www-data:www-data /var/www/symfony5/
-sudo chmod -R 755 /var/www/symfony5/
+sudo chown -R www-data:www-data /var/www/html/swrauskunft/
+sudo chmod -R 755 /var/www/html/swrauskunft/
+sudo chmod -R 777 /var/www/html/swrauskunft/
+ 
 
 [[[[ Configure Apache2 ]]]]
 sudo nano /etc/apache2/sites-available/symfony.conf

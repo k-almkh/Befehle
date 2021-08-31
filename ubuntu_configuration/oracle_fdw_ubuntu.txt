@@ -1,0 +1,29 @@
+/// oracle_fdw ////
+1- https://github.com/laurenz/oracle_fdw#6-installation
+	Bibliothek oracle_fdw  als zip Datei installiern 
+2- unzip Datai oracle_fdw-maste
+	sudo unzip oracle_fdw-maste.zip
+3-	cd oracle_fdw-maste
+4- sudo make install
+5- wenn es einen Fehler mit postgres.h nicht gefunden gibt, müssen wir installiern:
+	sudo apt -y install postgresql-12 postgresql-client-12
+	sudo apt -y install postgresql-server-dev-12 
+	sudo apt -y install libpq-dev 
+	sudo apt -y install libpq5
+6- enn es einen Fehler mit oci.h nicht gefunden gibt, müssen wir in /oracle_fdw-maste/Makefile oracle-client path hinzufügen:
+	PG_CPPFLAGS = I/opt/oracle/instantclient/sdk/include
+	SHLIB_LINK = -L/opt/oracle/instantclient
+7- sudo make install
+	und oracle_fdw extension hinzufügen
+	und die Verbindung mit Oracle-Server erstellen:
+	Name= sis_hro_ou
+	Options =
+		Options		Value
+		dbserver	cis-vdbo:1522/O121HRO
+	postgres user erstellen:
+	Name= postgres
+		Options		Value
+		user		qgis
+		password 	qgis#read
+8- dann Tabellen erstellen.
+
