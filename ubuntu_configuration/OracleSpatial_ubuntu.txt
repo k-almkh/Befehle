@@ -3,25 +3,18 @@ Oracle Spatial in Mapserver activieren:
 	http://download.osgeo.org/mapserver/
 1- download and extract mapserver source and change directory:
 	sudo wget http://download.osgeo.org/mapserver/mapserver-7.6.4.tar.gz
-	sudo tar xvf mapserver-7.0.2.tar.gz
-	sudo cd mapserver-7.0.2/
+	sudo tar xvf mapserver-7.6.4.tar.gz
+	cd mapserver-7.6.4/
 
 2- install cmake
 	sudo apt-get install cmake
 	
 3- make build directory and change to it [~/mapserver-7.0.2/build]:
-	mkdir build
+	sudo mkdir build
 	cd build	
 	
 4-install compile requirement
-	sudo apt-get install libfreetype6-dev 
-	sudo apt-get install libproj-dev
-	sudo apt-get install libfribidi-dev
-	sudo apt-get install libharfbuzz-dev
-	sudo apt-get install libcairo-dev
-	sudo apt-get install libgdal-dev
-	sudo apt-get install libgpg-dev
-	sudo apt-get install libaio1
+	sudo apt-get -y install libfreetype6-dev libproj-dev libfribidi-dev libharfbuzz-dev libcairo2-dev libgdal-dev libaio1
 
 5- 	change in FindOracle.cmake 
 	
@@ -47,11 +40,41 @@ Oracle Spatial in Mapserver activieren:
 	   # ${ORACLE_HOME}/sdk/lib/msvc
 	   # ${ORACLE_HOME}/OCI/lib/msvc) # Oracle XE on Windows
 	
-	sudo cmake .. -DCMAKE_PREFIX_PATH=/opt/oracle/instantclient:/opt/oracle/instantclient/sdk/include: -DWITH_ORACLESPATIAL=ON -DWITH_ORACLE_PLUGIN=0 -DWITH_FRIBIDI=ON -DWITH_HARFBUZZ=ON -DWITH_RSVG=0
+	sudo cmake .. -DCMAKE_BUILD_TYPE='debug' -DCMAKE_INSTALL_PREFIX=/opt/mapserver -DCMAKE_PREFIX_PATH=/opt/oracle/instantclient:/opt/oracle/instantclient/sdk/include: -DWITH_ORACLESPATIAL=ON -DWITH_ORACLE_PLUGIN=0 -DWITH_PROTOBUFC=0 -DWITH_CAIRO=0
+	
 	sudo make
 	sudo make install
 
-6-  mapserv -v
+7- mapserver.conf
+		Listen 8028
+		<VirtualHost *:8028>
+			ServerAdmin webmaster@localhost
+			ServerName mapserverdemo
+			DocumentRoot /var/www/ms4w
+
+			<Directory /var/www/ms4w>
+				AllowOverride All
+						Order Allow,Deny
+						Allow from All
+			</Directory>
+
+			ScriptAlias /cgi-bin/ /opt/mapserver/bin/
+			<Directory "/opt/mapserver/bin/">
+			   AllowOverride All
+				Options +ExecCGI -MultiViews +FollowSymLinks
+			   AddHandler fcgid-script .fcgi
+			   Require all granted
+			</Directory>
+
+			 <Location "/cgi-bin/">
+				 SetEnv ORACLE_HOME "/opt/oracle/instantclient"
+			 </Location>
+			
+			ErrorLog ${APACHE_LOG_DIR}/error.log
+			CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+		</VirtualHost>
+6-  /opt/mapserver/bin/mapserv -v
 	MapServer version 7.6.4 OUTPUT=PNG OUTPUT=JPEG SUPPORTS=PROJ SUPPORTS=AGG SUPPORTS=FREETYPE SUPPORTS=CAIRO SUPPORTS=ICONV 
 	SUPPORTS=FRIBIDI SUPPORTS=WMS_SERVER SUPPORTS=WFS_SERVER SUPPORTS=WCS_SERVER SUPPORTS=FASTCGI SUPPORTS=GEOS 
 	SUPPORTS=POINT_Z_M INPUT=JPEG INPUT=POSTGIS INPUT=ORACLESPATIAL INPUT=OGR INPUT=GDAL INPUT=SHAPEFILE
@@ -71,5 +94,5 @@ How to build swig on ubuntu?
 	./configure
 	make
 	sudo make install
-  
-
+	
+ 

@@ -19,7 +19,6 @@ twig:
 	npm install	
  4- rename styles to css in assets file 
 	  in assets/css file convert app.css to app.scss and 
-	  in assets/styles file convert app.css to app.scss and 
 	  in app.js convert from: import '../css/app.css'; to: import '../css/app.scss';
   - create file with name js
   - copy app.js $ bootstrap.js to js file

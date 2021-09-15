@@ -1,4 +1,6 @@
 	php bin/console security:encode-password
+	
+	symfony console make:entity --regenerate // get und set entity
 
 Symfony Local Web Server
 	symfony server:ca:install

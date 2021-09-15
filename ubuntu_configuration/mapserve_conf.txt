@@ -1,0 +1,28 @@
+Listen 8028
+<VirtualHost *:8028>
+	ServerAdmin webmaster@localhost
+	ServerName mapserverdemo
+	DocumentRoot /var/www/ms4w
+
+	<Directory /var/www/ms4w>
+		AllowOverride All
+                Order Allow,Deny
+                Allow from All
+	</Directory>
+
+	ScriptAlias /cgi-bin/ /opt/mapserver/bin/
+    <Directory "/opt/mapserver/bin/">
+       AllowOverride All
+        Options +ExecCGI -MultiViews +FollowSymLinks
+       AddHandler fcgid-script .fcgi
+       Require all granted
+    </Directory>
+
+	 <Location "/cgi-bin/">
+	     SetEnv ORACLE_HOME "/opt/oracle/instantclient"
+	 </Location>
+	
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>

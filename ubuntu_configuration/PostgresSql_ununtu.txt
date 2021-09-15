@@ -28,6 +28,7 @@ Schritt 3 — Installieren von PostGIS
 	createdb postgis_db -O postgis_test
 	psql -d postgis_db
 	CREATE EXTENSION postgis;
+	ALTER EXTENSION postgis UPDATE;
 Schritt 4 — Installieren von PgAdmin 4
 	sudo apt update
 	sudo apt install pgadmin4 pgadmin4-apache2

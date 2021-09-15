@@ -4,7 +4,10 @@ http://github.com/mapserver/mapserver/wiki/RenderingOsmDataWindows
 2- sudo apt install osm2pgsql
 3- sudo su postgres
 4- osm2pgsql -c -d baustellen /home/sisadmin/Downloads/mecklenburg-vorpommern-latest.osm.pbf
+osm2pgsql -U postgres -W -m -d osm -p osm -E 3857 -S "C:\Users\kalmkheter\Downloads\osm2pgsql-latest-x64\osm2pgsql-bin\default.style" C:\ms4w\apps\osm\data\mecklenburg-vorpommern-latest.osm.pbf
 
 /// linke for install osm
 https://www.linuxbabe.com/ubuntu/openstreetmap-tile-server-ubuntu-20-04-osm
-
+https://wiki.openstreetmap.org/wiki/Planet.osm#Country_and_area_extracts
+https://planet.openstreetmap.org/
+https://download.geofabrik.de/

@@ -6,12 +6,14 @@
 3-	cd oracle_fdw-maste
 4- sudo make install
 5- wenn es einen Fehler mit postgres.h nicht gefunden gibt, müssen wir installiern:
-	sudo apt -y install postgresql-12 postgresql-client-12
-	sudo apt -y install postgresql-server-dev-12 
-	sudo apt -y install libpq-dev 
-	sudo apt -y install libpq5
-6- enn es einen Fehler mit oci.h nicht gefunden gibt, müssen wir in /oracle_fdw-maste/Makefile oracle-client path hinzufügen:
-	PG_CPPFLAGS = I/opt/oracle/instantclient/sdk/include
+	sudo apt-get -y install postgresql-12 postgresql-client-12	
+	psql -V
+	sudo apt-get -y install libpq5
+	sudo apt-get install libpq5=12.5-0ubuntu0.20.04.1
+	sudo apt-get -y install libpq-dev
+	sudo apt-get -y install postgresql-server-dev-12	
+6- wenn es einen Fehler mit oci.h nicht gefunden gibt, müssen wir in /oracle_fdw-maste/Makefile oracle-client path hinzufügen:
+	PG_CPPFLAGS = -I/opt/oracle/instantclient/sdk/include
 	SHLIB_LINK = -L/opt/oracle/instantclient
 7- sudo make install
 	und oracle_fdw extension hinzufügen
