@@ -29,3 +29,13 @@
 		password 	qgis#read
 8- dann Tabellen erstellen.
 
+
+unter Windows:
+
+https://pgxn.org/dist/oracle_fdw/2.4.0/
+
+ msbuild oracle_fdw.sln /p:Configuration="Release" ^
+            /p:Platform="x64" ^
+            /p:OracleClient="C:\oracle\instantclient_12_1" ^
+            /p:PostgreSQL="C:\Program Files\PostgreSQL\13\bin"
+

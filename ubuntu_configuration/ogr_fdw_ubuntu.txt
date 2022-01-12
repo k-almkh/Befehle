@@ -1,0 +1,48 @@
+https://github.com/pramsey/pgsql-ogr-fdw
+
+sudo apt update -y
+sudo apt-get install postgresql-12-ogr-fdw
+
+CREATE EXTENSION postgis;
+CREATE EXTENSION ogr_fdw;
+
+CREATE SERVER hro_baustellen_geplant
+  FOREIGN DATA WRAPPER ogr_fdw
+  OPTIONS (
+    datasource 'WFS:https://geo.sv.rostock.de/geodienste/baustellen_geplant/wfs',
+    format 'WFS' );
+
+CREATE FOREIGN TABLE wfs_hro_baustellen_geplant (
+  fid bigint,
+  geometrie Geometry(MultiSurface,25833),
+  gml_id varchar,
+  uuid varchar,
+  baustelle_geplant_uuid varchar,
+  kreis_name varchar,
+  kreis_schluessel varchar,
+  gemeindeverband_name varchar,
+  gemeindeverband_schluessel varchar,
+  gemeinde_name varchar,
+  gemeinde_schluessel varchar,
+  strasse_name varchar,
+  strasse_schluessel varchar,
+  bezeichnung varchar,
+  kurzbeschreibung varchar,
+  lagebeschreibung varchar,
+  verkehrliche_lage varchar,
+  sparte varchar,
+  bauzeit varchar,
+  auftraggeber varchar,
+  status varchar,
+  dokument_uuid varchar,
+  dokument_bezeichnung varchar,
+  dokument varchar
+  )
+  SERVER "hro_baustellen_geplant"
+  OPTIONS (layer 'baustellen_geplant:hro.baustellen_geplant.baustellen_geplant');
+
+///////////////
+
+
+
+			

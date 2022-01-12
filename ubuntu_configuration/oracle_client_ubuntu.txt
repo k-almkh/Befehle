@@ -8,7 +8,6 @@ neue Folder erstellen:
 Unzip die Packte: 
 	sudo unzip instantclient-basic-linux.x64-12.2.0.1.0.zip
 	sudo unzip instantclient-sdk-linux.x64-12.2.0.1.0.zip
-	sudo mv instantclient_12_2 /opt/oracle/instantclient
 	sudo chown -R root:www-data /opt/oracle
 	sudo ln -s /opt/oracle/instantclient_12_2/libclntsh.so.12.1 /opt/oracle/instantclient_12_2/libclntsh.so
 	sudo ln -s /opt/oracle/instantclient_12_2/libocci.so.12.1 /opt/oracle/instantclient_12_2/libocci.so

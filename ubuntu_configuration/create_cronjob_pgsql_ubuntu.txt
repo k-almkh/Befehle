@@ -1,0 +1,68 @@
+ create job in PostgreSQL in windows:
+http://www.dbrnd.com/2015/05/how-to-create-job-in-postgresql/
+
+create job in PostgreSQL in Ubuntu:
+https://github.com/citusdata/pg_cron
+
+sudo apt-get -y install postgresql-12-cron
+
+# add to postgresql.conf:
+shared_preload_libraries = 'pg_cron'
+cron.database_name = 'baustelle'
+
+-- run as superuser:
+CREATE EXTENSION pg_cron;
+
+-- optionally, grant usage to regular users:
+GRANT USAGE ON SCHEMA cron TO postgres;
+
+
+//////////
+
+create or replace procedure update_wfs_hro_baustellen_geplant()
+language plpgsql    
+as $$
+begin
+
+   DROP FOREIGN TABLE public.wfs_hro_baustellen_geplant;
+
+   CREATE FOREIGN TABLE wfs_hro_baustellen_geplant (
+  fid bigint,
+  geometrie Geometry(MultiSurface,25833),
+  gml_id varchar,
+  uuid varchar,
+  baustelle_geplant_uuid varchar,
+  kreis_name varchar,
+  kreis_schluessel varchar,
+  gemeindeverband_name varchar,
+  gemeindeverband_schluessel varchar,
+  gemeinde_name varchar,
+  gemeinde_schluessel varchar,
+  strasse_name varchar,
+  strasse_schluessel varchar,
+  bezeichnung varchar,
+  kurzbeschreibung varchar,
+  lagebeschreibung varchar,
+  verkehrliche_lage varchar,
+  sparte varchar,
+  bauzeit varchar,
+  auftraggeber varchar,
+  status varchar,
+  dokument_uuid varchar,
+  dokument_bezeichnung varchar,
+  dokument varchar
+  )
+  SERVER "hro_baustellen_geplant"
+  OPTIONS (layer 'baustellen_geplant:hro.baustellen_geplant.baustellen_geplant');
+
+    commit;
+end;$$
+
+//////////////
+
+call public.update_wfs_hro_baustellen_geplant();
+
+///////////
+
+SELECT cron.schedule('55 14 * * *', $$call update_wfs_hro_baustellen_geplant()$$);
+

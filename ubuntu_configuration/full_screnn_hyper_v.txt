@@ -1,0 +1,10 @@
+https://nixworld.org/ubuntu-fullscreen-on-hyper-v/
+
+Ubuntu full screen Hyper-v
+	- sudo nano /etc/default/grub
+	- Change line
+		GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+	to
+		GRUB_CMDLINE_LINUX_DEFAULT="quiet splash video=hyperv_fb:1920x1080"
+	- sudo update-grub
+	- sudo reboot

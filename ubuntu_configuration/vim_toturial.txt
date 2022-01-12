@@ -1,0 +1,6 @@
+Escape|Esc to enter command mode
+ctrl-v to enter visual mode
+J/K to select the lines
+I insert mode
+///
+X delete mode

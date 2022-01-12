@@ -5,3 +5,17 @@
 Symfony Local Web Server
 	symfony server:ca:install
 	symfony server:start -d
+	
+/// Create Project ///
+
+	1- composer create-project symfony/website-skeleton symfony_map_encore
+		/ composer create-project symfony/website-skeleton:"^4.4" symfony_map_encore
+	2- cd symfony_map_encore
+	3-  composer require logger
+	4- php bin/console make:controller HomeController
+	5- php bin/console doctrine:database:create
+	4- php bin/console make:crud Product
+	5- composer require symfony/var-dumper
+	
+
+composer require doctrine/doctrine-cache-bundle --with-all-dependencies 

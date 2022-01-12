@@ -1,0 +1,343 @@
+ SELECT f.id,
+    f.zeitraum1 && f.zeitraum2 AS overlap,
+        CASE
+            WHEN f.potenzial = 1 THEN 1
+            ELSE 0
+        END AS in12,
+        CASE
+            WHEN f.potenzial = 2 THEN 1
+            ELSE 0
+        END AS in24,
+    f.polygon
+   FROM ( SELECT pf.id,
+            daterange(b1.beginn, b1.ende) AS zeitraum1,
+            daterange(TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD'), TO_DATE(b2.bauzeit_ende,'YYYY-MM-DD')) AS zeitraum2,
+                CASE
+                    WHEN b1.beginn = TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') THEN 1
+                    WHEN b1.beginn = TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') THEN 1
+                    WHEN TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') = b1.ende THEN 1
+                    WHEN b1.ende = TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') THEN 1
+                    WHEN b1.ende < TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') AND TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') < (b1.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende < TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') AND TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') < (b1.ende + '2 years'::interval)::date THEN 2
+                    WHEN b1.ende > TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') AND b1.beginn < (TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende > TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') AND b1.beginn < (TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') + '2 years'::interval)::date THEN 2
+                    ELSE 3
+                END AS potenzial,
+            b1.beginn AS beginn1,
+            TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') AS beginn2,
+            b1.ende AS ende1,
+            TO_DATE(b2.bauzeit_beginn,'YYYY-MM-DD') AS ende2,
+            pf.polygon
+           FROM pf_hro pf,
+            baustellen b1,
+            bvk_wfs b2
+          WHERE b1.id = TO_NUMBER(substring(pf.baustelle1_id from 5),  '9999999999') AND b2.fid = TO_NUMBER(substring(pf.baustelle2_id from 5),  '9999999999')) f;
+		  
+		  
+--potenzial_flaechen_view alt
+		  
+ SELECT f.id,
+    f.sparte1,
+    f.sparte2,
+    f.zeitraum1 && f.zeitraum2 AS overlap,
+        CASE
+            WHEN f.potenzial = 1 THEN 1
+            ELSE 0
+        END AS in12,
+        CASE
+            WHEN f.potenzial = 2 THEN 1
+            ELSE 0
+        END AS in24,
+    f.polygon
+   FROM ( SELECT pf.id,
+            b1.sparte_id AS sparte1,
+            b2.sparte_id AS sparte2,
+            daterange(b1.beginn, b1.ende) AS zeitraum1,
+            daterange(b2.beginn, b2.ende) AS zeitraum2,
+                CASE
+                    WHEN b1.beginn = b2.beginn THEN 1
+                    WHEN b1.beginn = b2.ende THEN 1
+                    WHEN b2.beginn = b1.ende THEN 1
+                    WHEN b1.ende = b2.ende THEN 1
+                    WHEN b1.ende < b2.beginn AND b2.beginn < (b1.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende < b2.beginn AND b2.beginn < (b1.ende + '2 years'::interval)::date THEN 2
+                    WHEN b1.ende > b2.beginn AND b1.beginn < (b2.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende > b2.beginn AND b1.beginn < (b2.ende + '2 years'::interval)::date THEN 2
+                    ELSE 3
+                END AS potenzial,
+            b1.beginn AS beginn1,
+            b2.beginn AS beginn2,
+            b1.ende AS ende1,
+            b2.ende AS ende2,
+            pf.polygon
+           FROM potenzial_flaechen pf,
+            baustellen b1,
+            baustellen b2
+          WHERE b1.id = pf.baustelle1_id AND b2.id = pf.baustelle2_id) f;
+		  
+		  
+--potenzial_flaechen_view neue
+-- View: public.v_potenzial_flaechen
+-- DROP VIEW public.v_potenzial_flaechen;
+
+CREATE OR REPLACE VIEW public.v_potenzial_flaechen_1
+ AS
+ SELECT f.id,
+    f.sparte1,
+    f.sparte1_name,
+    f.sparte2,
+    f.sparte2_name,
+    f.zeitraum1 && f.zeitraum2 AS overlap,
+        CASE
+            WHEN f.potenzial = 1 THEN 1
+            ELSE 0
+        END AS in12,
+        CASE
+            WHEN f.potenzial = 2 THEN 1
+            ELSE 0
+        END AS in24,
+    f.polygon
+   FROM ( SELECT pf.id,
+            b1.sparte_id AS sparte1,
+            b2.sparte_id AS sparte2,
+            ( SELECT sparten.text
+                   FROM sparten
+                  WHERE sparten.id = b1.sparte_id) AS sparte1_name,
+            ( SELECT sparten.text
+                   FROM sparten
+                  WHERE sparten.id = b2.sparte_id) AS sparte2_name,
+            daterange(b1.beginn, b1.ende) AS zeitraum1,
+            daterange(b2.beginn, b2.ende) AS zeitraum2,
+                CASE
+                    WHEN b1.beginn = b2.beginn THEN 1
+                    WHEN b1.beginn = b2.ende THEN 1
+                    WHEN b2.beginn = b1.ende THEN 1
+                    WHEN b1.ende = b2.ende THEN 1
+                    WHEN b1.ende < b2.beginn AND b2.beginn < (b1.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende < b2.beginn AND b2.beginn < (b1.ende + '2 years'::interval)::date THEN 2
+                    WHEN b1.ende > b2.beginn AND b1.beginn < (b2.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende > b2.beginn AND b1.beginn < (b2.ende + '2 years'::interval)::date THEN 2
+                    ELSE 3
+                END AS potenzial,
+            b1.beginn AS beginn1,
+            b2.beginn AS beginn2,
+            b1.ende AS ende1,
+            b2.ende AS ende2,
+            pf.polygon
+           FROM potenzial_flaechen pf,
+            baustellen b1,
+            baustellen b2
+          WHERE b1.id = pf.baustelle1_id AND b2.id = pf.baustelle2_id) f
+UNION ALL
+ SELECT f.id,
+    f.sparte1,
+    f.sparte1_name,
+    f.sparte2,
+    f.sparte2_name,
+    f.zeitraum1 && f.zeitraum2 AS overlap,
+        CASE
+            WHEN f.potenzial = 1 THEN 1
+            ELSE 0
+        END AS in12,
+        CASE
+            WHEN f.potenzial = 2 THEN 1
+            ELSE 0
+        END AS in24,
+    f.polygon
+   FROM ( SELECT pf.id,
+            b1.sparte_id AS sparte1,
+            ( SELECT sparten.text
+                   FROM sparten
+                  WHERE sparten.id = b1.sparte_id) AS sparte1_name,
+            0 AS sparte2,
+            'Hansestadt Rostock'::text AS sparte2_name,
+            daterange(b1.beginn, b1.ende) AS zeitraum1,
+            daterange(b2.bauzeit_beginn, b2.bauzeit_ende) AS zeitraum2,
+                CASE
+                    WHEN b1.beginn = b2.bauzeit_beginn THEN 1
+                    WHEN b1.beginn = b2.bauzeit_ende THEN 1
+                    WHEN b2.bauzeit_beginn = b1.ende THEN 1
+                    WHEN b1.ende = b2.bauzeit_ende THEN 1
+                    WHEN b1.ende < b2.bauzeit_beginn AND b2.bauzeit_beginn < (b1.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende < b2.bauzeit_beginn AND b2.bauzeit_beginn < (b1.ende + '2 years'::interval)::date THEN 2
+                    WHEN b1.ende > b2.bauzeit_beginn AND b1.beginn < (b2.bauzeit_ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende > b2.bauzeit_beginn AND b1.beginn < (b2.bauzeit_ende + '2 years'::interval)::date THEN 2
+                    ELSE 3
+                END AS potenzial,
+            b1.beginn AS beginn1,
+            b2.bauzeit_beginn AS beginn2,
+            b1.ende AS ende1,
+            b2.bauzeit_ende AS ende2,
+            pf.polygon
+           FROM potenzial_flaechen_wfs pf,
+            baustellen b1,
+            bvk_wfs b2
+          WHERE b1.id::numeric = to_number("substring"(pf.baustelle1_id::text, 5), '9999999999'::text) AND b2.fid::numeric = to_number("substring"(pf.baustelle2_id::text, 5), '9999999999'::text)) f;
+
+
+
+/// update bvk hro function
+
+declare
+   rowBV1 baustellen%rowtype;
+
+begin
+
+   -- Löschen der alten Einträge in HRO-BV und HRO-PF:
+   DELETE FROM public.bvk_hro;
+   DELETE FROM public.pf_hro;
+   
+   -- Übernahme der HRO-BV:
+   INSERT INTO bvk_hro(id,
+    polygon, 
+	gml_id, uuid, baustelle_geplant_uuid, kreis_name, kreis_schluessel,
+    gemeindeverband_name, gemeindeverband_schluessel, gemeinde_name, gemeinde_schluessel,
+    strasse_name, strasse_schluessel, bezeichnung, kurzbeschreibung, lagebeschreibung,
+    verkehrliche_lage, sparte, bauzeit, bauzeit_beginn, bauzeit_ende,
+	auftraggeber, status, dokument_uuid, 
+	dokument_bezeichnung, dokument)
+	select distinct fid,
+    (ST_DUMP(geometrie)).geom::geometry(Polygon,5650) AS polygon,
+	gml_id, uuid, baustelle_geplant_uuid, kreis_name, kreis_schluessel,
+    gemeindeverband_name, gemeindeverband_schluessel, gemeinde_name, gemeinde_schluessel,
+    strasse_name, strasse_schluessel, bezeichnung, kurzbeschreibung, lagebeschreibung,
+    verkehrliche_lage, sparte, bauzeit,
+	make_date(substring(bauzeit from '^(\d+)')::integer, 1, 1) as bauzeit_beginn,
+	make_date(substring(bauzeit from '(\d+)$')::integer, 12, 31) as bauzeit_ende,
+	auftraggeber, status, dokument_uuid, 
+	dokument_bezeichnung, dokument
+	from public.wfs_hro_baustellen_geplant_multi
+	where st_isvalid(geometrie)='true'
+		and auftraggeber != 'Rostocker Straßenbahn AG'
+		and auftraggeber != 'Stadtwerke Rostock AG'
+		and auftraggeber != 'Stadtwerke Rostock Netzgesellschaft mbH'
+		and auftraggeber != 'Nordwasser GmbH'
+	order by fid;
+
+
+	-- Erzeugen der Potenzialflächen (SWR-BV mit HRO-BV):
+   	FOR rowBV1 IN SELECT * from baustellen where status_id != 5 order by id LOOP
+		INSERT INTO pf_hro(id,baustelle1_id, baustelle2_id, aenderung, polygon)
+		SELECT nextval('potenzial_flaechen_id_sequence')
+			, rowBV1.id as b1_id
+			, id as b2_id
+			, current_timestamp
+			, st_asewkt(st_multi(st_intersection(rowBV1.polygon, polygon))) AS pf_polygon
+			FROM bvk_hro 
+			WHERE st_intersects(rowBV1.polygon, polygon); 
+	END LOOP;
+
+end;
+
+-- View: public.v_potenzial_flaechen
+
+-- DROP VIEW public.v_potenzial_flaechen;
+
+CREATE OR REPLACE VIEW public.v_potenzial_flaechen
+ AS
+ SELECT f.id,
+    f.sparte1,
+    f.sparte1_name,
+    f.sparte2,
+    f.sparte2_name,
+    f.zeitraum1 && f.zeitraum2 AS overlap,
+        CASE
+            WHEN f.potenzial = 1 THEN 1
+            ELSE 0
+        END AS in12,
+        CASE
+            WHEN f.potenzial = 2 THEN 1
+            ELSE 0
+        END AS in24,
+    f.polygon
+   FROM ( SELECT pf.id,
+            b1.sparte_id AS sparte1,
+            b2.sparte_id AS sparte2,
+            ( SELECT sparten.text
+                   FROM sparten
+                  WHERE sparten.id = b1.sparte_id) AS sparte1_name,
+            ( SELECT sparten.text
+                   FROM sparten
+                  WHERE sparten.id = b2.sparte_id) AS sparte2_name,
+            daterange(b1.beginn, b1.ende) AS zeitraum1,
+            daterange(b2.beginn, b2.ende) AS zeitraum2,
+                CASE
+                    WHEN b1.beginn = b2.beginn THEN 1
+                    WHEN b1.beginn = b2.ende THEN 1
+                    WHEN b2.beginn = b1.ende THEN 1
+                    WHEN b1.ende = b2.ende THEN 1
+                    WHEN b1.ende < b2.beginn AND b2.beginn < (b1.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende < b2.beginn AND b2.beginn < (b1.ende + '2 years'::interval)::date THEN 2
+                    WHEN b1.ende > b2.beginn AND b1.beginn < (b2.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende > b2.beginn AND b1.beginn < (b2.ende + '2 years'::interval)::date THEN 2
+                    ELSE 3
+                END AS potenzial,
+            b1.beginn AS beginn1,
+            b2.beginn AS beginn2,
+            b1.ende AS ende1,
+            b2.ende AS ende2,
+            pf.polygon
+           FROM potenzial_flaechen pf,
+            baustellen b1,
+            baustellen b2
+          WHERE b1.id = pf.baustelle1_id AND b2.id = pf.baustelle2_id) f
+UNION ALL
+ SELECT f.id,
+    f.sparte1,
+    f.sparte1_name,
+    f.sparte2,
+    f.sparte2_name,
+    f.zeitraum1 && f.zeitraum2 AS overlap,
+        CASE
+            WHEN f.potenzial = 1 THEN 1
+            ELSE 0
+        END AS in12,
+        CASE
+            WHEN f.potenzial = 2 THEN 1
+            ELSE 0
+        END AS in24,
+    f.polygon
+   FROM ( SELECT pf.id,
+            b1.sparte_id AS sparte1,
+            ( SELECT sparten.text
+                   FROM sparten
+                  WHERE sparten.id = b1.sparte_id) AS sparte1_name,
+            0 AS sparte2,
+            'Hansestadt Rostock'::text AS sparte2_name,
+            daterange(b1.beginn, b1.ende) AS zeitraum1,
+            daterange(b2.bauzeit_beginn, b2.bauzeit_ende) AS zeitraum2,
+                CASE
+                    WHEN b1.beginn = b2.bauzeit_beginn THEN 1
+                    WHEN b1.beginn = b2.bauzeit_ende THEN 1
+                    WHEN b2.bauzeit_beginn = b1.ende THEN 1
+                    WHEN b1.ende = b2.bauzeit_ende THEN 1
+                    WHEN b1.ende < b2.bauzeit_beginn AND b2.bauzeit_beginn < (b1.ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende < b2.bauzeit_beginn AND b2.bauzeit_beginn < (b1.ende + '2 years'::interval)::date THEN 2
+                    WHEN b1.ende > b2.bauzeit_beginn AND b1.beginn < (b2.bauzeit_ende + '1 year'::interval)::date THEN 1
+                    WHEN b1.ende > b2.bauzeit_beginn AND b1.beginn < (b2.bauzeit_ende + '2 years'::interval)::date THEN 2
+                    ELSE 3
+                END AS potenzial,
+            b1.beginn AS beginn1,
+            b2.bauzeit_beginn AS beginn2,
+            b1.ende AS ende1,
+            b2.bauzeit_ende AS ende2,
+            pf.polygon
+           FROM potenzial_flaechen_wfs pf,
+            baustellen b1,
+            bvk_hro b2
+          WHERE b1.id = pf.baustelle1_id AND b2.id = pf.baustelle2_id) f;
+
+ALTER TABLE public.v_potenzial_flaechen
+    OWNER TO postgres;
+	
+	
+	
+// if not empty table
+
+	select count(*) from public.wfs_hro_baustellen_geplant_multi where (SELECT CASE 
+			 WHEN EXISTS (SELECT * FROM public.wfs_hro_baustellen_geplant_multi LIMIT 1) THEN 1
+			 ELSE 0 
+		   END as test) =1;
+
+
+

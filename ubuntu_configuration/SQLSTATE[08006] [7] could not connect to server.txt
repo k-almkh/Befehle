@@ -1,0 +1,25 @@
+An exception occurred in driver: SQLSTATE[08006] [7] could not connect to s erver: Connection refused Is the server
+
+4
+1
+cd /etc/postgresql/9.x/main/
+2
+------- open file named postgresql.conf
+3
+sudo nano postgresql.conf
+4
+------- add this line to that file
+5
+listen_addresses = '*'
+6
+------- then open file named pg_hba.conf
+7
+sudo nano pg_hba.conf
+8
+------- and add this line to that file
+9
+host  all  all 0.0.0.0/0 md5
+10
+------- restart your server
+11
+sudo /etc/init.d/postgresql restart

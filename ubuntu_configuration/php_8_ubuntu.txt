@@ -36,3 +36,5 @@ configure Apache to use PHP 8.0:
 PHP 7.4	
 	sudo apt -y install php7.4
 	sudo apt-get install -y php7.4-{bcmath,bz2,intl,gd,mbstring,mysql,zip,common, }
+	
+	https://beyond.lol/installieren-von-php-7-4-auf-ubuntu-20-04-lts-18-04-lts-16-04-lts/

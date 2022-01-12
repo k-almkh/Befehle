@@ -1,13 +1,4 @@
-Bootstrap 5
 
-//Bootstrap 5 Form Theme for Form
-https://symfony.com/doc/6.0/form/bootstrap5.html
-
-# config/packages/twig.yaml
-twig:
-    form_themes: ['bootstrap_5_layout.html.twig']
-	
-	{% form_theme form 'bootstrap_5_layout.html.twig' %}
 
 ////////////////  yarn install or npm install	////////////
 //Installing Encore =>
@@ -93,3 +84,17 @@ twig:
 			@import '~@fortawesome/fontawesome-free/scss/brands';
 		
  18- php bin/console make:controller Home
+ 
+ 
+ 
+ 
+ Bootstrap 5
+
+//Bootstrap 5 Form Theme for Form
+https://symfony.com/doc/6.0/form/bootstrap5.html
+
+# config/packages/twig.yaml
+twig:
+    form_themes: ['bootstrap_5_layout.html.twig']
+	
+	{% form_theme form 'bootstrap_5_layout.html.twig' %}
