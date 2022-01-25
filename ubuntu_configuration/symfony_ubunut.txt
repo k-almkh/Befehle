@@ -42,9 +42,9 @@ sudo nano /etc/apache2/sites-available/symfony.conf
 sudo a2ensite symfony.conf
 sudo systemctl restart apache2.service
 
-sudo chown -R www-data:www-data /var/www/swr_projekte_prod/swr_auskunft
-sudo chmod -R 755 /var/www/swr_projekte_prod/swr_auskunft
-sudo chmod -R 777 /var/www/swr_projekte_prod/swr_auskunft
+sudo chown -R www-data:www-data /var/www/swr_projekte_prod/swr_bvk
+sudo chmod -R 755 /var/www/swr_projekte_prod/swr_bvk
+sudo chmod -R 777 /var/www/swr_projekte_prod/swr_bvk
 
 
 /// Composer Update Options

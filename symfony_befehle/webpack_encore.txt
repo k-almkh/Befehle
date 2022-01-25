@@ -1,6 +1,18 @@
 
 
 ////////////////  yarn install or npm install	////////////
+	composer require symfony/webpack-encore-bundle ; yarn install ; yarn add sass-loader sass webpack --dev ; yarn add bootstrap --dev ; yarn add @popperjs/core ; yarn add jquery --dev ; yarn add --dev @fortawesome/fontawesome-free ; 
+	Rename-Item -Path "./assets/styles/app.css" -NewName "app.scss" ; Clear-Content "./assets/styles/app.scss"; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~bootstrap/scss/bootstrap";' ; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/fontawesome";'; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/solid";'; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/regular";'; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/brands";';  Add-Content -Path ./assets/styles/app.scss  -Value '@import "custom";' ; 
+	Add-Content -Path ./assets/styles/custom.scss  -Value 'body { background-color:rgb(243, 211, 211);}' ;
+	Clear-Content "./assets/app.js" ; Add-Content -Path ./assets/app.js  -Value 'import "./styles/app.scss";' ; Add-Content -Path ./assets/app.js  -Value 'import "bootstrap";' ;
+$projektName = Read-Host -Prompt "geben Sie bitte eine Name für Ihr Projekt"
+$projektPath = Read-Host -Prompt "geben Sie bitte eine Path für Ihr Projekt (Z.B 'c:/..')"
+cd $projektPath
+cd C:/Users/$env:USERNAME/Desktop
+composer create-project symfony/website-skeleton $projektName
+composer require symfony/webpack-encore-bundle ; yarn install ; yarn add sass-loader sass webpack --dev ; yarn add bootstrap --dev ; yarn add @popperjs/core ; yarn add jquery --dev ; yarn add --dev @fortawesome/fontawesome-free ; Rename-Item -Path "./assets/styles/app.css" -NewName "app.scss" ; Clear-Content "./assets/styles/app.scss"; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~bootstrap/scss/bootstrap";' ; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/fontawesome";'; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/solid";'; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/regular";'; Add-Content -Path ./assets/styles/app.scss  -Value '@import "~@fortawesome/fontawesome-free/scss/brands";';  Add-Content -Path ./assets/styles/app.scss  -Value '@import "custom";' ; Add-Content -Path ./assets/styles/custom.scss  -Value 'body { background-color:rgb(243, 211, 211);}' ; Clear-Content "./assets/app.js" ; Add-Content -Path ./assets/app.js  -Value 'import "./styles/app.scss";' ; Add-Content -Path ./assets/app.js  -Value 'import "bootstrap";' ; php bin/console make:controller Home  ; symfony server:ca:install ; symfony server:start -d ; start 'https://127.0.0.1:8000/home'     
+
+
 //Installing Encore =>
 
  1- composer require symfony/webpack-encore-bundle
@@ -21,7 +33,7 @@
   
 	// https://getbootstrap.com/
  5- npm install sass-loader sass webpack --save-dev
-  / yarn add sass-loader sass --dev
+  / yarn add sass-loader sass webpack --dev
  6- add to base.html.twig this:
       {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
