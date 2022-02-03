@@ -40,3 +40,21 @@ git push -u origin main
 
 Error: LF will be replaced by CRLF in git - What is that and is it important?
 Answers: git config core.autocrlf true
+
+
+
+
+
+…or create a new repository on the command line
+	echo "# symfony_6_Bestellungsverwaltung" >> README.md
+	git init
+	git add README.md
+	git commit -m "first commit"
+	git branch -M main
+	git remote add origin https://github.com/k-almkh/symfony_6_Bestellungsverwaltung.git
+	git push -u origin main
+	
+…or push an existing repository from the command line
+	git remote add origin https://github.com/k-almkh/symfony_6_Bestellungsverwaltung.git
+	git branch -M main
+	git push -u origin main

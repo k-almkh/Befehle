@@ -1,0 +1,62 @@
+@echo off
+:abfrage
+REM ++ Abfrage der Funktionen +++++++++++
+cls
+echo +++++++++++++++++++++++++++++++++++++
+echo +++ PC-Cleaner und Backup +++
+echo +++++++++++++++++++++++++++++++++++++
+echo.
+echo.
+echo.
+echo "t" eingeben, um Temp-Dateien zu loeschen
+echo "s" eingeben, um Temp-Dateien zu loeschen und Windows herunterfahren
+echo "b" eingeben, um Eigene Dateien zu sichern
+echo "x" eingeben, um Eigene Dateien zu sichern und Windows herunterfahren
+echo "e" eingeben, um diese Batch zu beenden
+
+echo.
+set /p eingabe=Ihre Auswahl: 
+if /i '%eingabe%'=='t' goto deltemp
+if /i '%eingabe%'=='s' goto deltempshutdown
+if /i '%eingabe%'=='b' goto backup
+if /i '%eingabe%'=='x' goto backupshutdown
+if /i '%eingabe%'=='e' goto ende
+goto abfrage
+:deltemp
+Echo Temp-Dateien des Nutzers werden geloescht
+del /q /f /s %temp%\*
+Echo Temp-Dateien geloescht, bitte Taste druecken
+Pause
+goto abfrage
+:deltempshutdown
+Echo Temp-Dateien des Nutzers werden geloescht
+del /q /f /s %temp%\*
+Echo fertig, Shutdown startet
+Shutdown /s
+Goto Ende
+:backup
+REM Pruefung Backupordner
+IF NOT EXIST "d:\Sicherung\%USERNAME%" mkdir "d:\Sicherung\%USERNAME%"
+Echo Sicherung Eigener Dateien
+XCopy "%HOMEDRIVE%\%HOMEPATH%\Documents\*" "d:\Sicherung\%USERNAME%" /E /C /H /Y /D
+Echo Kopiervorgang beendet, bitte Taste druecken
+Pause
+goto abfrage
+:backupshutdown
+REM Pruefung Backupordner
+IF NOT EXIST "d:\Sicherung\%USERNAME%" mkdir "d:\Sicherung\%USERNAME%"
+Echo Sicherung Eigener Dateien
+XCopy "%HOMEDRIVE%\%HOMEPATH%\Documents\*" "d:\Sicherung\%USERNAME%" /E /C /H /Y /D
+Echo Kopiervorgang beendet, bitte Taste druecken
+Pause
+Echo Shutdown startet
+Shutdown /s
+Goto Ende
+:ende
+exit
+if /i '%eingabe%' NEQ '' goto deltemp
+goto abfrage
+:deltemp
+Echo Temp-Dateien des Nutzers werden geloescht
+Pause
+exit
