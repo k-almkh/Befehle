@@ -6,6 +6,16 @@ Symfony Local Web Server
 	symfony server:ca:install
 	symfony server:start -d
 	
+	
+//// Import all Entity from datbase
+
+	php bin/console doctrine:mapping:import "App\Entity" annotation --path=src/Entity
+	// generates getter/setter methods for all Entities
+	php bin/console make:entity --regenerate App
+
+	// generates getter/setter methods for one specific Entity
+	php bin/console make:entity --regenerate App\Entity\Country
+	
 /// Create Project ///
 
 	1- composer create-project symfony/website-skeleton symfony_map_encore
@@ -19,3 +29,20 @@ Symfony Local Web Server
 	
 
 composer require doctrine/doctrine-cache-bundle --with-all-dependencies 
+
+
+///  Fehler analysieren
+composer require --dev phpstan/phpstan
+
+vendor/bin/phpstan analyse src  
+vendor/bin/phpstan analyse -l 1 src  
+vendor/bin/phpstan analyse -l 9 src 
+
+///// unbekannte Reposotory 
+
+ /** @var UserRepository $userRepository */
+    $userRepository = $this->em->getRepository(User::class);
+	
+///// composer dump-autoload	
+	composer dump-autoload
+	composer dump-autoload --optimize --no-dev --classmap-authoritative

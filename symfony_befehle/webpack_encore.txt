@@ -85,7 +85,8 @@ composer require symfony/webpack-encore-bundle ; yarn install ; yarn add sass-lo
 				defer: false
 				
  17- npm install font-awesome 
-   / yarn add font-awesome --dev 
+   / yarn add font-awesome --dev
+	@import '~font-awesome';
    / npm add --dev @fortawesome/fontawesome-free
 	 yarn add --dev @fortawesome/fontawesome-free
 		- @import '~font-awesome'; in assets/css/app.scss
